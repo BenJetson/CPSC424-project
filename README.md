@@ -1,4 +1,4 @@
-# CS4240/6240 Spring 2020 Project Description
+# CPSC 424 Spring 2020 Project
 
 Your project is worth 100 points.
 
