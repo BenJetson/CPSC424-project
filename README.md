@@ -29,7 +29,9 @@ general topic areas are listed below:
 
 All topics are subject to approval! Project will be done in milestones.
 
-## Milestone 1 Due: 3/14 before 11:59 pm (10%)
+## Milestone 1
+
+**Due:** 3/14 before 11:59 pm (10%)
 
 Write a 1-page project proposal in .pdf format. Clearly identify the objectives
 of your project. Describe in detail what you are doing and why you are doing it.
@@ -38,7 +40,9 @@ members of your group (no more than 4), and describe the system/s that you are
 using for your project. Your project should either use a VM, or any Linux
 installation of your choice, not Windows. Submit to canvas to get feedback.
 
-## Milestone 2 Due 3/24 before 11:59 pm (10%)
+## Milestone 2
+
+**Due:** 3/24 before 11:59 pm (10%)
 
 Show that you have made a significant progress on your project. Show working
 code, print and submit research papers that back your project, etc. Explain how
@@ -47,7 +51,10 @@ working modules. You will submit a 1-page description of what you have
 implemented and what you are planning to add to the existing project, plus no
 less than 3 or more research papers that back it up.
 
-## Milestone 3 Due: 4/6 and 4/8 in class and submit via canvas before 4/8 before 11:59 pm (30%)
+## Milestone 3
+
+**Due:** 4/6 and 4/8 in class and submit via canvas before 4/8 before 11:59 pm
+(30%)
 
 Because we are meeting on Zoom, you will present your project on Zoom. Your
 presentation will be no longer than 15 minutes, and no shorter than 8 minutes.
@@ -55,7 +62,9 @@ It should have audio and video and demo all parts of your project. Provide
 motivation why you have done what you have done, and why it is
 important/cool/etc.
 
-## Final paper submission Due: 4/9 before 11;59 pm via canvas (50%)
+## Final Paper Submission
+
+**Due:** 4/9 before 11:59 pm via canvas (50%)
 
 You will submit a 2 – 2.5 page paper that describes the details of your project.
 The paper should be written in ACM format. Please keep in mind that this format
