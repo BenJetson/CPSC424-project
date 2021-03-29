@@ -85,8 +85,21 @@ class SettingTree:
     items: List[Setting]
     subtrees: List[SettingTree]
 
-    def __init__(self, name: str) -> None:
+    def __init__(
+        self,
+        name: str = "",
+        groups: List[SettingGroup] = None,  # should not be none for root.
+    ) -> None:
+
         self.name = name
+
+        settings: List[Setting] = []
+        for group in groups:
+            for item in group.items:
+                settings.append(item)
+
+        for setting in settings:
+            self.insert(setting, setting.path)
 
     def has_active_items(self) -> bool:
         active_count = 0
@@ -97,7 +110,7 @@ class SettingTree:
         return active_count > 0
 
     def save_to_disk(
-        self, path_so_far: List[str], profile_file: TextIO, lock_file: TextIO
+        self, path_so_far: List[str], profile_file: TextIO, lock_file: TextIO,
     ) -> None:
         if self.has_active_items():
             current_path = path_so_far + [self.name]
@@ -128,7 +141,7 @@ class SettingTree:
                 target_tree = subtree
 
         if target_tree is None:
-            target_tree = SettingTree(target)
+            target_tree = SettingTree(name=target)
             self.subtrees.append(target_tree)
 
         target_tree.insert(setting, remaining_path[1:])
@@ -147,20 +160,6 @@ class SettingGroup:
         self.title = title
         self.description = description
         self.items = items
-
-
-def build_setting_tree_from_groups(groups: List[SettingGroup]) -> SettingTree:
-    root = SettingTree("")
-
-    settings: List[Setting] = []
-    for group in groups:
-        for item in group.items:
-            settings.append(item)
-
-    for setting in settings:
-        root.insert(setting, setting.path)
-
-    return root
 
 
 class SettingManagerProto(Protocol):
