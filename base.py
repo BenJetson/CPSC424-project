@@ -79,6 +79,21 @@ class Setting:
         return f"{self.key}={payload}"
 
 
+class SettingGroup:
+    title: str
+    description: str
+
+    items: List[Setting]
+
+    def __init__(
+        self, title: str, description: str, items: List[Setting],
+    ) -> None:
+
+        self.title = title
+        self.description = description
+        self.items = items
+
+
 class SettingTree:
     name: str
 
@@ -145,21 +160,6 @@ class SettingTree:
             self.subtrees.append(target_tree)
 
         target_tree.insert(setting, remaining_path[1:])
-
-
-class SettingGroup:
-    title: str
-    description: str
-
-    items: List[Setting]
-
-    def __init__(
-        self, title: str, description: str, items: List[Setting],
-    ) -> None:
-
-        self.title = title
-        self.description = description
-        self.items = items
 
 
 class SettingManagerProto(Protocol):
