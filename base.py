@@ -1,3 +1,14 @@
+#
+# CPSC 424-001 SP21
+# Term Project
+#
+# Ben Godfrey (bfgodfr)
+# and
+# Avery Holder (holder9)
+#
+# base.py - the backend of our program
+#
+
 from __future__ import annotations
 
 from enum import Enum
