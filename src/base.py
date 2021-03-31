@@ -69,7 +69,7 @@ class Setting:
         self.value = value
 
     def unset(self) -> None:
-        self.set_value(None)
+        self.value = None
 
     def is_set(self) -> bool:
         return self.value is not None
