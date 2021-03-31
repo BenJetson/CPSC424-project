@@ -9,10 +9,11 @@
 # base.py - the backend of our program
 #
 
+
 from __future__ import annotations
 
-from enum import Enum
 from abc import abstractmethod
+from enum import Enum
 from json import dumps as json_dump
 from typing import Any, Final, List, Protocol, TextIO
 
