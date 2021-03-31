@@ -75,7 +75,7 @@ class Setting:
         return self.value is not None
 
     def full_path(self) -> str:
-        return "/".join(self.path)
+        return "/" + "/".join(self.path)
 
     def fully_qualified_name(self) -> str:
         return f"{self.full_path()}/{self.key}"
