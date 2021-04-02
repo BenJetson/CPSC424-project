@@ -174,10 +174,15 @@ class SettingTree:
         target_tree.insert(setting, remaining_path[1:])
 
 
-class SettingManagerProto(Protocol):
+class SettingManager:
     groups: List[SettingGroup]
 
-    @abstractmethod
-    def set_setting(self):
-        pass
+    def __init__(self, groups: List[SettingGroup]) -> None:
+        self.groups = groups
+
+    def save_to_disk(self):
+        tree = SettingTree(groups=self.groups)
+
+        with open("profile.out", "w") as pf, open("locks.out", "w") as lf:
+            tree.save_to_disk([], pf, lf)
 
