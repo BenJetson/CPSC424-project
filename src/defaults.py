@@ -80,9 +80,11 @@ def generate() -> SettingManager:
             Setting(
                 "Idle timeout",
                 "Number of seconds of inactivity before being considered idle.",
-                SettingType.NUMBER,
+                SettingType.CHOICE,
                 ["org", "gnome", "desktop", "session"],
                 "idle-delay",
+                None,
+                ["5", "10", "15", "20"],
             ),
             Setting(
                 "Show notifications when locked",

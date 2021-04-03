@@ -22,6 +22,9 @@ for group in mgr.groups:
 
     for setting in group.items:
         print(f"    Setting: {setting.name} has value {setting.get_value()} and is type {setting.get_kind()}")
+        if setting.value_list is not None:
+            for value in setting.value_list:
+                print(f"        Value: {value}")
         setting_frame = ttk.Frame(master=tab)
         label = tk.Label(master=setting_frame, text=setting.name, width=30, anchor="w").grid(row=0, column=0, padx=5, pady=5)
         entry = tk.Entry(master=setting_frame, width=20).grid(row=0, column=1, padx=5)

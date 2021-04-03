@@ -22,17 +22,17 @@ class SettingType(Enum):
     STRING = "string"
     NUMBER = "number"
     BOOLEAN = "boolean"
+    CHOICE = "choice"
 
 
 class Setting:
     name: str
     description: str
-
     kind: SettingType
-
     path: List[str]
     key: str
     value: Any = None
+    value_list: List[str] = None
 
     def __init__(
         self,
@@ -42,6 +42,7 @@ class Setting:
         path: List[str],
         key: str,
         value: Any = None,
+        value_list: List[str] = None
     ) -> None:
 
         self.name = name
@@ -50,6 +51,10 @@ class Setting:
         self.path = path
         self.key = key
         self.value = value
+        self.value_list = value_list
+
+    def get_value_list(self) -> Any:
+        return self.value_list
         
     def get_kind(self) -> Any:
         return self.kind

@@ -1,4 +1,5 @@
 from defaults import generate
+from base import SettingType
 import tkinter as tk                    
 from tkinter import ttk
 
@@ -24,7 +25,10 @@ for group in mgr.groups:
     for setting in group.items:
         setting_frame = ttk.Frame(master=tab)
         label = tk.Label(master=setting_frame, text=setting.name, width=30, anchor="w").grid(row=0, column=0, padx=5, pady=5)
-        entry = tk.Entry(master=setting_frame, width=20).grid(row=0, column=1, padx=5)
+        if setting.get_kind() is SettingType.CHOICE:
+            entry = ttk.Combobox(master=setting_frame, values=setting.value_list, width=20).grid(row=0, column=1, padx=5)
+        else:
+            entry = tk.Entry(master=setting_frame, width=20).grid(row=0, column=1, padx=5)
         setting_frame.pack()
 
 
