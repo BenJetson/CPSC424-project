@@ -64,6 +64,7 @@ class SettingWidget(ttk.Frame):
             self.widget_entry.bind(
                 "<<ComboboxSelected>>", self.handle_combobox_change
             )
+            self.widget_entry.current(0)
         elif self.setting.get_kind() is SettingType.BOOLEAN:
             self.widget_entry = ttk.Combobox(
                 master=self,
@@ -75,6 +76,7 @@ class SettingWidget(ttk.Frame):
             self.widget_entry.bind(
                 "<<ComboboxSelected>>", self.handle_combobox_change
             )
+            self.widget_entry.current(0)
         else:
             self.entry_stringvar = tk.StringVar()
             self.widget_entry = tk.Entry(
