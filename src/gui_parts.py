@@ -100,7 +100,7 @@ class SettingRow:
             )
         else:
             self.entry_stringvar = tk.StringVar()
-            self.widget_entry = tk.Entry(
+            self.widget_entry = ttk.Entry(
                 master=self.frame,
                 width=20,
                 textvariable=self.entry_stringvar,
