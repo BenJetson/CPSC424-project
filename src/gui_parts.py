@@ -54,24 +54,20 @@ class SettingWidget(ttk.Frame):
 
     def build_entry(self) -> None:
         # Set the input method based on setting type.
-        if self.setting.get_kind() is SettingType.CHOICE:
+        if (
+            self.setting.get_kind() is SettingType.CHOICE
+            or self.setting.get_kind() is SettingType.BOOLEAN
+        ):
+            choices = (
+                self.setting.value_list
+                if self.setting.value_list is not None
+                else [True, False]
+            )
             self.widget_entry = ttk.Combobox(
                 master=self,
-                values=self.setting.value_list,  # list of legal values.
+                values=choices,  # list of legal values.
                 width=20,
-                state="readonly"
-            )
-            self.widget_entry.bind(
-                "<<ComboboxSelected>>", self.handle_combobox_change
-            )
-            self.widget_entry.current(0)
-        elif self.setting.get_kind() is SettingType.BOOLEAN:
-            self.widget_entry = ttk.Combobox(
-                master=self,
-                values=[True, False],  # for booleans, we shall show these.
-                width=20,
-                postcommand=self.handle_combobox_change,
-                state="readonly"
+                state="readonly",
             )
             self.widget_entry.bind(
                 "<<ComboboxSelected>>", self.handle_combobox_change
