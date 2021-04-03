@@ -15,6 +15,8 @@ from __future__ import annotations
 from abc import abstractmethod
 from enum import Enum
 from json import dumps as json_dump
+from os import remove as delete_file
+from os.path import exists as file_exists
 from typing import Any, Final, List, Protocol, TextIO
 
 
@@ -201,12 +203,26 @@ class SettingTree:
 class SettingManager:
     groups: List[SettingGroup]
 
+    PROFILE_FILE = "profile.out"  # FIXME
+    LOCK_FILE = "locks.out"  # FIXME
+
     def __init__(self, groups: List[SettingGroup]) -> None:
         self.groups = groups
 
-    def save_to_disk(self):
+    def save_to_disk(self) -> None:
         tree = SettingTree(groups=self.groups)
 
-        with open("profile.out", "w") as pf, open("locks.out", "w") as lf:
+        with open(
+            SettingManager.PROFILE_FILE, "w"  # file for profile
+        ) as pf, open(
+            SettingManager.LOCK_FILE, "w"  # file for locks
+        ) as lf:
             tree.save_to_disk([], pf, lf)
+
+    def unlock_all(self) -> None:
+        if file_exists(SettingManager.PROFILE_FILE):
+            delete_file(SettingManager.PROFILE_FILE)
+
+        if file_exists(SettingManager.LOCK_FILE):
+            delete_file(SettingManager.LOCK_FILE)
 
