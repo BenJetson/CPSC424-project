@@ -10,24 +10,28 @@
 #
 
 import tkinter as tk
-from os import geteuid
+from os import geteuid, getenv
 from tkinter import messagebox, ttk
 
 from base import SettingType
 from defaults import generate
 from gui_parts import SettingWidget
 
-# Check for root access before starting program.
-if geteuid() != 0:
-    pass  # FIXME should re-enable the code below after we're done testing
-
-    # print("Must run this program as root!")  # TODO maybe show this in GUI?
-    messagebox.showerror('Ok', 'This must be run as root. Try using sudo.')
-    exit(1)
-
 # Create main window frame
 root = tk.Tk()
 root.title("Setting Lock Manager")
+
+# Check for root access before starting program.
+# Can be overridden using DEBUG environment variable.
+if geteuid() != 0 and getenv("DEBUG") is None:
+    messagebox.showerror(
+        "Insufficient Privileges",
+        "This program must be run as root. Try using sudo.",
+    )
+    exit(1)
+
+
+# Create the tab interface manager.
 tabControl = ttk.Notebook(root)
 
 # Generate the list of settings
