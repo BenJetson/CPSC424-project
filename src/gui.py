@@ -1,3 +1,14 @@
+#
+# CPSC 424-001 SP21
+# Term Project
+#
+# Ben Godfrey (bfgodfr)
+# and
+# Avery Holder (holder9)
+#
+# gui.py - the main driver for our program; renders the GUI.
+#
+
 import tkinter as tk
 from os import geteuid
 from tkinter import messagebox, ttk
@@ -5,7 +16,6 @@ from tkinter import messagebox, ttk
 from base import SettingType
 from defaults import generate
 from gui_parts import SettingWidget
-
 
 # Check for root access before starting program.
 if geteuid() != 0:
