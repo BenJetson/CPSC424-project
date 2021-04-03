@@ -59,6 +59,7 @@ class SettingWidget(ttk.Frame):
                 master=self,
                 values=self.setting.value_list,  # list of legal values.
                 width=20,
+                state="readonly"
             )
             self.widget_entry.bind(
                 "<<ComboboxSelected>>", self.handle_combobox_change
@@ -69,6 +70,7 @@ class SettingWidget(ttk.Frame):
                 values=[True, False],  # for booleans, we shall show these.
                 width=20,
                 postcommand=self.handle_combobox_change,
+                state="readonly"
             )
             self.widget_entry.bind(
                 "<<ComboboxSelected>>", self.handle_combobox_change
