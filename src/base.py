@@ -42,7 +42,7 @@ class Setting:
         path: List[str],
         key: str,
         value: Any = None,
-        value_list: List[str] = None
+        value_list: List[str] = None,
     ) -> None:
 
         self.name = name
@@ -53,9 +53,14 @@ class Setting:
         self.value = value
         self.value_list = value_list
 
+        if self.value_list is not None and self.kind is not SettingType.CHOICE:
+            raise RuntimeError(
+                "Settings not of type CHOICE cannot have value lists."
+            )
+
     def get_value_list(self) -> Any:
         return self.value_list
-        
+
     def get_kind(self) -> Any:
         return self.kind
 
@@ -63,7 +68,14 @@ class Setting:
         return self.value
 
     def set_value(self, value: Any) -> None:
-        if (
+        if self.kind == SettingType.CHOICE:
+            if value not in self.value_list:
+                raise RuntimeError(
+                    "Illegal setting value: {} is not in {}.".format(
+                        json_dump(value), json_dump(self.value_list)
+                    )
+                )
+        elif (
             (self.kind == SettingType.BOOLEAN and not isinstance(value, bool))
             or (self.kind == SettingType.NUMBER and not isinstance(value, int))
             or (self.kind == SettingType.STRING and not isinstance(value, str))
@@ -89,12 +101,11 @@ class Setting:
         return f"{self.full_path()}/{self.key}"
 
     def __str__(self) -> str:
-        payload = f"'{self.value}'"
+        payload = json_dump(self.value)
 
-        if isinstance(self.value, int):
-            payload = f"{self.value}"
-        elif isinstance(self.value, bool):
-            payload = "true" if self.value is True else "false"
+        if isinstance(self.value, str):
+            # JSON will double-quote strings, we need single-quote.
+            payload = f"'{self.value}'"
 
         return f"{self.key}={payload}"
 
