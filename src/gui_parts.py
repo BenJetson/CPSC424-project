@@ -20,6 +20,7 @@ class SettingWidget(ttk.Frame):
     setting: Setting
 
     widget_ckbx: ttk.Checkbutton
+    ckbx_intvar: tk.IntVar
 
     widget_entry: Union[ttk.Entry, ttk.Combobox]
     entry_stringvar: tk.StringVar
@@ -50,7 +51,13 @@ class SettingWidget(ttk.Frame):
         ).grid(row=0, column=0, padx=5, pady=5)
 
     def build_ckbx(self) -> None:
-        pass
+        self.ckbx_intvar = tk.IntVar()
+        self.widget_ckbx = tk.Checkbutton(
+            master=self,
+            variable=self.ckbx_intvar,
+            command=self.handle_ckbx_change,
+        )
+        self.widget_ckbx.grid(row=0, column=1, padx=5)
 
     def build_entry(self) -> None:
         # Set the input method based on setting type.
@@ -67,12 +74,11 @@ class SettingWidget(ttk.Frame):
                 master=self,
                 values=choices,  # list of legal values.
                 width=20,
-                state="readonly",
+                state="disabled",
             )
             self.widget_entry.bind(
                 "<<ComboboxSelected>>", self.handle_combobox_change
             )
-            self.widget_entry.current(0)
         else:
             self.entry_stringvar = tk.StringVar()
             self.widget_entry = tk.Entry(
@@ -81,9 +87,38 @@ class SettingWidget(ttk.Frame):
                 textvariable=self.entry_stringvar,
                 validate="all",
                 validatecommand=self.register(self.handle_entry_change),
+                state="disabled",
             )
 
-        self.widget_entry.grid(row=0, column=1, padx=5)
+        self.widget_entry.grid(row=0, column=2, padx=5)
+
+    def enable_entry(self) -> None:
+        if isinstance(self.widget_entry, ttk.Combobox):
+            self.widget_entry.configure(state="readonly")
+            self.widget_entry.current(0)
+            self.handle_combobox_change()
+        else:
+            self.widget_entry.configure(state="normal")
+            self.entry_stringvar.set("")
+            self.handle_entry_change()
+
+    def disable_entry(self) -> None:
+        self.widget_entry.configure(state="disabled")
+
+        if isinstance(self.widget_entry, ttk.Combobox):
+            self.widget_entry.set("")
+        else:
+            self.entry_stringvar.set("")
+
+        self.setting.unset()
+
+    def handle_ckbx_change(self, _: ttk.Checkbutton = None) -> None:
+        is_checked = self.ckbx_intvar.get() == 1
+
+        if is_checked:
+            self.enable_entry()
+        else:
+            self.disable_entry()
 
     def handle_combobox_change(self, _: ttk.Combobox = None) -> None:
         value = self.widget_entry.get()  # always a string.
