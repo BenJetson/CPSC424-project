@@ -14,9 +14,6 @@ root = tk.Tk()
 root.title("Tab Widget")
 tabControl = ttk.Notebook(root)
 
-security_tab = ttk.Frame(master=tabControl)
-misc_tab = ttk.Frame(master=tabControl)
-
 # List of settings and values. This will be a list of lists.
 settings_list = []
 
@@ -34,6 +31,8 @@ for group in mgr.groups:
     for setting in group.items:
         setting_frame = ttk.Frame(master=tab)
         label = tk.Label(master=setting_frame, text=setting.name, width=30, anchor="w").grid(row=0, column=0, padx=5, pady=5)
+
+        # Set the input method based on setting type.
         if setting.get_kind() is SettingType.CHOICE:
             entry = ttk.Combobox(master=setting_frame, values=setting.value_list, width=20)
             entry.grid(row=0, column=1, padx=5)
@@ -46,7 +45,8 @@ for group in mgr.groups:
         settings_list.append(temp_list)
         setting_frame.pack()
 
-
+# Button for applying settings
 B = tk.Button(text="Apply", command=get_vals).pack(side=tk.RIGHT, padx=5, pady=5)
   
+# This shows the window and needs to be at the bottom iirc.
 root.mainloop() 
