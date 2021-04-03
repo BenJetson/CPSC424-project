@@ -1,9 +1,16 @@
-from defaults import generate
-from base import SettingType
-from gui_parts import SettingWidget
 import tkinter as tk
-from tkinter import messagebox
-from tkinter import ttk
+from os import geteuid
+from tkinter import messagebox, ttk
+
+from base import SettingType
+from defaults import generate
+from gui_parts import SettingWidget
+
+if geteuid() != 0:
+    pass  # FIXME should re-enable the code below after we're done testing
+
+    # print("Must run this program as root!")  # TODO maybe show this in GUI?
+    # exit(1)
 
 # Create main window frame
 root = tk.Tk()
