@@ -138,6 +138,11 @@ class SettingTree:
     ) -> None:
 
         self.name = name
+        self.items = []
+        self.subtrees = []
+
+        if groups is None:
+            return
 
         settings: List[Setting] = []
         for group in groups:
@@ -158,10 +163,10 @@ class SettingTree:
     def save_to_disk(
         self, path_so_far: List[str], profile_file: TextIO, lock_file: TextIO,
     ) -> None:
-        if self.has_active_items():
-            current_path = path_so_far + [self.name]
-            current_path_str = "/".join(current_path)
+        current_path = path_so_far + [self.name]
+        current_path_str = "/".join(current_path)
 
+        if self.has_active_items():
             profile_file.write(f"[{current_path_str}]\n")
             for item in self.items:
                 profile_file.write(str(item) + "\n")
