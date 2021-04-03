@@ -16,7 +16,29 @@ from tkinter import ttk
 from base import Setting, SettingType
 
 
-class SettingWidget(ttk.Frame):
+class SettingRowHeader:
+    def __init__(self, frame: ttk.Frame):
+        ttk.Label(master=frame, text="Setting", width=30, anchor="w").grid(
+            row=0, column=0, padx=5, pady=5
+        )
+        ttk.Label(master=frame, text="Locked?", anchor="w").grid(
+            row=0, column=1, padx=5, pady=5
+        )
+        ttk.Label(master=frame, text="Value", width=20, anchor="w").grid(
+            row=0, column=2, padx=5, pady=5
+        )
+
+        ttk.Separator(master=frame, orient=tk.HORIZONTAL).grid(
+            row=1, column=0, columnspan=3, sticky="ew", pady=5,
+        )
+
+        frame.pack()
+
+
+class SettingRow:
+    frame: ttk.Frame
+    row_no: int
+
     setting: Setting
 
     widget_ckbx: ttk.Checkbutton
@@ -25,17 +47,14 @@ class SettingWidget(ttk.Frame):
     widget_entry: Union[ttk.Entry, ttk.Combobox]
     entry_stringvar: tk.StringVar
 
-    def __init__(
-        self,
-        setting: Setting,
-        master: ttk.Frame,  # unlike ttk.Frame, this is required here.
-        **kwargs,
-    ) -> None:
+    def __init__(self, setting: Setting, frame: ttk.Frame, row_no: int) -> None:
         # Pass necessary arguments to parent initializer.
-        super().__init__(master=master, **kwargs)
+        # super().__init__(master=master, **kwargs)
 
         # Save a reference to the given Setting object.
         self.setting = setting
+        self.frame = frame
+        self.row_no = row_no
 
         # Construct widgets.
         self.build_label()
@@ -43,21 +62,21 @@ class SettingWidget(ttk.Frame):
         self.build_entry()
 
         # Pack widgets.
-        self.pack()
+        self.frame.pack()
 
     def build_label(self) -> None:
-        tk.Label(
-            master=self, text=self.setting.name, width=30, anchor="w"
-        ).grid(row=0, column=0, padx=5, pady=5)
+        ttk.Label(
+            master=self.frame, text=self.setting.name, width=30, anchor="w"
+        ).grid(row=self.row_no, column=0, padx=5, pady=5)
 
     def build_ckbx(self) -> None:
         self.ckbx_intvar = tk.IntVar()
         self.widget_ckbx = tk.Checkbutton(
-            master=self,
+            master=self.frame,
             variable=self.ckbx_intvar,
             command=self.handle_ckbx_change,
         )
-        self.widget_ckbx.grid(row=0, column=1, padx=5)
+        self.widget_ckbx.grid(row=self.row_no, column=1, padx=5)
 
     def build_entry(self) -> None:
         # Set the input method based on setting type.
@@ -71,7 +90,7 @@ class SettingWidget(ttk.Frame):
                 else [True, False]
             )
             self.widget_entry = ttk.Combobox(
-                master=self,
+                master=self.frame,
                 values=choices,  # list of legal values.
                 width=20,
                 state="disabled",
@@ -82,15 +101,15 @@ class SettingWidget(ttk.Frame):
         else:
             self.entry_stringvar = tk.StringVar()
             self.widget_entry = tk.Entry(
-                master=self,
+                master=self.frame,
                 width=20,
                 textvariable=self.entry_stringvar,
                 validate="all",
-                validatecommand=self.register(self.handle_entry_change),
+                validatecommand=self.frame.register(self.handle_entry_change),
                 state="disabled",
             )
 
-        self.widget_entry.grid(row=0, column=2, padx=5)
+        self.widget_entry.grid(row=self.row_no, column=2, padx=5)
 
     def enable_entry(self) -> None:
         if isinstance(self.widget_entry, ttk.Combobox):

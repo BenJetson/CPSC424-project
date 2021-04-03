@@ -15,7 +15,7 @@ from tkinter import messagebox, ttk
 
 from base import SettingType
 from defaults import generate
-from gui_parts import SettingWidget
+from gui_parts import SettingRow, SettingRowHeader
 
 # Create main window frame
 root = tk.Tk()
@@ -62,10 +62,15 @@ for group in mgr.groups:
     tabControl.add(tab, text=group.title)
     tabControl.pack(expand=1, fill="both")
 
+    settings_frame = ttk.Frame(master=tab)
+
+    # Add a header row.
+    SettingRowHeader(settings_frame)
+
     # Iterate over each setting in the group
     # Add a label and control for each
-    for setting in group.items:
-        SettingWidget(setting, tab)
+    for index, setting in enumerate(group.items):
+        SettingRow(setting, settings_frame, index + 2)
 
 # Create buttons in  the footer.
 tk.Button(text="Save", command=save).pack(side=tk.RIGHT, padx=5, pady=5)
