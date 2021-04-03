@@ -22,8 +22,8 @@ if geteuid() != 0:
     pass  # FIXME should re-enable the code below after we're done testing
 
     # print("Must run this program as root!")  # TODO maybe show this in GUI?
-    # exit(1)
-
+    messagebox.showerror('Ok', 'This must be run as root. Try using sudo.')
+    exit(1)
 
 # Create main window frame
 root = tk.Tk()
