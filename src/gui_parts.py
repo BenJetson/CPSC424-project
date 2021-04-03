@@ -26,13 +26,13 @@ class SettingGroupHeader:
             master=frame,
             text=group.title,
             anchor="w",
-            font=("Sans", 24, "bold"),
+            font=("Helvetica", 24, "bold"),
         ).pack(fill="x", pady=10, padx=5)
         ttk.Label(
             master=frame,
             text=group.description,
             anchor="w",
-            font=("Sans", 14, "italic"),
+            font=("Helvetica", 14, "italic"),
         ).pack(fill="x", pady=5, padx=5)
 
         ttk.Separator(master=frame, orient=tk.HORIZONTAL).pack(fill="x", pady=5)
@@ -89,9 +89,24 @@ class SettingRow:
         self.frame.pack()
 
     def build_label(self) -> None:
+        label_frame = ttk.Frame(master=self.frame)
+
         ttk.Label(
-            master=self.frame, text=self.setting.name, width=30, anchor="w"
-        ).grid(row=self.row_no, column=0, padx=5, pady=5)
+            master=label_frame,
+            text=self.setting.name,
+            width=40,
+            anchor="w",
+            font=("Helvetica", 12, "bold"),
+        ).pack()
+        ttk.Label(
+            master=label_frame,
+            text=self.setting.description,
+            anchor="w",
+            wraplength=225,
+            font=("Helvetica", 10, "italic"),
+        ).pack(fill="x")
+
+        label_frame.grid(row=self.row_no, column=0, padx=5, pady=5)
 
     def build_ckbx(self) -> None:
         self.ckbx_intvar = tk.IntVar()
