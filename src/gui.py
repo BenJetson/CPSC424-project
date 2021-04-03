@@ -26,7 +26,7 @@ def save() -> None:
 def unlock_all() -> None:
     if messagebox.askyesno(
         title="Confirmation",
-        message="Are you sure? \n\nThis will immediately unlock all settings!",
+        message="Are you sure?\n\nThis will immediately unlock all settings!",
     ):
         mgr.unlock_all()
         messagebox.showinfo("Success", "Destroyed profile and locks.")
@@ -51,6 +51,9 @@ tk.Button(text="Cancel", command=root.destroy).pack(
 tk.Button(text="Unlock All", command=unlock_all).pack(
     side=tk.RIGHT, padx=5, pady=5
 )
+
+# Force the window to center on the display.
+root.eval("tk::PlaceWindow . center")
 
 # This shows the window and needs to be at the bottom iirc.
 root.mainloop()
