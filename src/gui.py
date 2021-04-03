@@ -10,12 +10,12 @@
 #
 
 import tkinter as tk
-from os import geteuid, getenv
+from os import getenv, geteuid
 from tkinter import messagebox, ttk
 
 from base import SettingType
 from defaults import generate
-from gui_parts import SettingRow, SettingRowHeader
+from gui_parts import SettingGroupHeader, SettingRow, SettingRowHeader
 
 # Create main window frame
 root = tk.Tk()
@@ -61,6 +61,9 @@ for group in mgr.groups:
     tab = ttk.Frame(master=tabControl)
     tabControl.add(tab, text=group.title)
     tabControl.pack(expand=1, fill="both")
+
+    group_header_frame = ttk.Frame(master=tab)
+    SettingGroupHeader(group, group_header_frame)
 
     settings_frame = ttk.Frame(master=tab)
 

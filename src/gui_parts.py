@@ -9,11 +9,35 @@
 # gui_parts.py - custom GUI widgets for our program.
 #
 
-from typing import Union
 import tkinter as tk
 from tkinter import ttk
+from typing import Union
 
-from base import Setting, SettingType
+from base import Setting, SettingGroup, SettingType
+
+
+class SettingGroupHeader:
+    def __init__(self, group: SettingGroup, frame: ttk.Frame):
+        # style = ttk.Style()
+        # style.configure("TLabel.Title", font=("Helvetica", 18, "bold"))
+        # style.configure("TLabel.Description", font=("Helvetica", 16, "italic"))
+
+        ttk.Label(
+            master=frame,
+            text=group.title,
+            anchor="w",
+            font=("Sans", 24, "bold"),
+        ).pack(fill="x", pady=10, padx=5)
+        ttk.Label(
+            master=frame,
+            text=group.description,
+            anchor="w",
+            font=("Sans", 14, "italic"),
+        ).pack(fill="x", pady=5, padx=5)
+
+        ttk.Separator(master=frame, orient=tk.HORIZONTAL).pack(fill="x", pady=5)
+
+        frame.pack(fill="x")
 
 
 class SettingRowHeader:
