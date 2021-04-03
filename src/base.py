@@ -171,6 +171,9 @@ class SettingTree:
         if self.has_active_items():
             profile_file.write(f"[{current_path_str}]\n")
             for item in self.items:
+                if not item.is_set():
+                    continue
+
                 profile_file.write(str(item) + "\n")
                 lock_file.write(item.fully_qualified_name() + "\n")
             profile_file.write("\n")
