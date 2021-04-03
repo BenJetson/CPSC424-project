@@ -50,6 +50,9 @@ class Setting:
         self.path = path
         self.key = key
         self.value = value
+        
+    def get_kind(self) -> Any:
+        return self.kind
 
     def get_value(self) -> Any:
         return self.value
