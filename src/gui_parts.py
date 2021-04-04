@@ -147,10 +147,9 @@ class SettingRow:
                 master=self.frame,
                 width=35,
                 textvariable=self.entry_stringvar,
-                validate="all",
-                validatecommand=self.frame.register(self.handle_entry_change),
                 state="disabled",
             )
+            self.entry_stringvar.trace_add("write", self.handle_entry_change)
 
         self.widget_entry.grid(row=self.row_no, column=2, padx=5)
 
@@ -185,13 +184,13 @@ class SettingRow:
         else:
             self.disable_entry()
 
-    def handle_combobox_change(self, _: ttk.Combobox = None) -> None:
+    def handle_combobox_change(self, *_) -> None:
         value = self.widget_entry.get()  # always a string.
 
         # print(f"combobox change! got {value}")  # FIXME
         self.set_from_string(value)
 
-    def handle_entry_change(self, _: ttk.Entry = None) -> bool:
+    def handle_entry_change(self, *_) -> bool:
         value = self.entry_stringvar.get()  # always a string.
 
         # print(f"entry change! got {value}")  # FIXME
@@ -224,9 +223,24 @@ class SettingRow:
             self.setting.unset()
             return
 
-        if self.setting.get_kind() == SettingType.NUMBER:
-            value = int(value)
-        if self.setting.get_kind() == SettingType.BOOLEAN:
+        elif self.setting.get_kind() == SettingType.NUMBER:
+            old_value: int = self.setting.get_value()
+
+            try:
+                value = int(value)
+            except ValueError:
+                # Reset entry to last known valid input.
+                self.entry_stringvar.set(
+                    str(old_value) if old_value is not None else ""
+                )
+
+                tk.messagebox.showerror(
+                    title="Invalid Input",
+                    message=f"Value '{self.setting.name}' must be an integer.",
+                )
+                return
+
+        elif self.setting.get_kind() == SettingType.BOOLEAN:
             value = True if value == "True" else False
 
         self.setting.set_value(value)
