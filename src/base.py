@@ -133,13 +133,21 @@ class SettingGroup:
         self.description = description
         self.items = items
 
-    def merge_values(self, other: SettingGroup) -> None:
+    def try_merge_values(self, other: SettingGroup) -> None:
         for my_item in self.items:
             my_fqn = my_item.fully_qualified_name()
 
             for other_item in other.items:
                 if my_fqn == other_item.fully_qualified_name():
-                    my_item.set_value(other_item.get_value())
+                    try:
+                        my_item.set_value(other_item.get_value())
+                    except RuntimeError as e:
+                        print(
+                            f"Could not set {my_item.fully_qualified_name()} "
+                            + f"to stored value of {other_item.get_value()}. \n"
+                            + f"\tReceived: {e}"
+                        )
+
                     other.items.remove(other_item)
 
                     # not breaking here would cause strange iteration since we
@@ -336,7 +344,7 @@ class SettingManager:
                 merge_group.items.append(s)
 
         for group in self.groups:
-            group.merge_values(merge_group)
+            group.try_merge_values(merge_group)
 
     def unlock_all(self) -> None:
         targets = [self.profile_file, self.setting_file, self.lock_file]
