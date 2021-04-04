@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 #
 # CPSC 424-001 SP21
 # Term Project
