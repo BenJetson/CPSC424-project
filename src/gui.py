@@ -39,6 +39,9 @@ tabControl = ttk.Notebook(root)
 # Generate the list of settings
 mgr = generate()
 
+# Load the existing values from disk.
+mgr.load_from_disk()
+
 
 def save() -> None:
     if messagebox.askyesno(

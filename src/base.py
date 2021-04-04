@@ -132,6 +132,20 @@ class SettingGroup:
         self.description = description
         self.items = items
 
+    def merge_values(self, other: SettingGroup) -> None:
+        for my_item in self.items:
+            my_fqn = my_item.fully_qualified_name()
+
+            for other_item in other.items:
+                if my_fqn == other_item.fully_qualified_name():
+                    my_item.set_value(other_item.get_value())
+                    other.items.remove(other_item)
+
+                    # not breaking here would cause strange iteration since we
+                    # are removing from the list we are iterating over.
+                    # Fortunately, we need to break anyway.
+                    break
+
 
 class SettingTree:
     name: str
@@ -216,17 +230,62 @@ class SettingTree:
         for setting in settings:
             self.insert(setting, setting.path)
 
-    def construct_from_disk(self, setting_file_name: str) -> None:
-        if not file_or_dir_exists(setting_file_name):
+
+class SettingManager:
+    groups: List[SettingGroup]
+
+    profile_file: str
+    setting_file: str
+    lock_file: str
+
+    def __init__(self, groups: List[SettingGroup]) -> None:
+        self.groups = groups
+
+        self.profile_file = "profile.out"
+        self.setting_file = "settings.out"
+        self.lock_file = "locks.out"
+
+        if not is_debug_mode():
+            self.profile_file = "/etc/dconf/profile/user"
+            self.setting_file = "/etc/dconf/db/local.d/00_setting_mgr"
+            self.lock_file = "/etc/dconf/db/local.d/locks/00_setting_mgr"
+
+    def save_to_disk(self) -> None:
+        tree = SettingTree(groups=self.groups)
+
+        if not is_debug_mode() and not file_or_dir_exists(
+            "/etc/dconf/db/local.d/locks"
+        ):
+            # When running without debug mode, we must ensure that this full
+            # directory structure exists, and create it if not.
+            makedirs("/etc/dconf/db/local.d/locks")
+
+        with open(self.profile_file, "w") as pf:
+            pf.writelines(["user-db:user\n" "system-db:local\n"])
+
+        with open(self.setting_file, "w") as sf, open(  # file for profile
+            self.lock_file, "w"  # file for locks
+        ) as lf:
+            tree.save_to_disk([], sf, lf)
+
+    def load_from_disk(self) -> None:
+        if not file_or_dir_exists(self.setting_file):
             return
 
-        with open(setting_file_name, "r") as sf:
+        merge_group = SettingGroup(
+            "Merge", "Scratch group for merging ops.", []
+        )
+
+        with open(self.setting_file, "r") as sf:
+            path: List[str] = None
+
             for line in sf.readlines():
+                line = line.rstrip()
+
                 # ignore blank lines; these are just for humans.
                 if len(line) == 0:
                     continue
 
-                path: List[str] = None
                 if line[0] == "[" and line[-1] == "]":
                     path_str = line[1:-1]
                     path = path_str.split("/")
@@ -267,56 +326,10 @@ class SettingTree:
                     value,
                 )
 
-                self.insert(s, path)
+                merge_group.items.append(s)
 
-    def merge_values(self, other: SettingTree) -> None:
-        for my_item in self.items:
-            for other_item in other.items:
-                if my_item.key == other_item.key:
-                    my_item.set_value(other_item.value)
-
-        for my_subtree in self.subtrees:
-            for other_subtree in other.subtrees:
-                if my_subtree.name == other_subtree.name:
-                    my_subtree.merge_values(other_subtree)
-
-
-class SettingManager:
-    groups: List[SettingGroup]
-
-    profile_file: str
-    setting_file: str
-    lock_file: str
-
-    def __init__(self, groups: List[SettingGroup]) -> None:
-        self.groups = groups
-
-        self.profile_file = "profile.out"
-        self.setting_file = "settings.out"
-        self.lock_file = "locks.out"
-
-        if not is_debug_mode():
-            self.profile_file = "/etc/dconf/profile/user"
-            self.setting_file = "/etc/dconf/db/local.d/00_setting_mgr"
-            self.lock_file = "/etc/dconf/db/local.d/locks/00_setting_mgr"
-
-    def save_to_disk(self) -> None:
-        tree = SettingTree(groups=self.groups)
-
-        if not is_debug_mode() and not file_or_dir_exists(
-            "/etc/dconf/db/local.d/locks"
-        ):
-            # When running without debug mode, we must ensure that this full
-            # directory structure exists, and create it if not.
-            makedirs("/etc/dconf/db/local.d/locks")
-
-        with open(self.profile_file, "w") as pf:
-            pf.writelines(["user-db:user\n" "system-db:local\n"])
-
-        with open(self.setting_file, "w") as sf, open(  # file for profile
-            self.lock_file, "w"  # file for locks
-        ) as lf:
-            tree.save_to_disk([], sf, lf)
+        for group in self.groups:
+            group.merge_values(merge_group)
 
     def unlock_all(self) -> None:
         targets = [self.profile_file, self.setting_file, self.lock_file]

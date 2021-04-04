@@ -85,6 +85,9 @@ class SettingRow:
         self.build_ckbx()
         self.build_entry()
 
+        # Synchronize the interface with the current value of the Setting.
+        self.populate_value()
+
         # Pack widgets.
         self.frame.pack()
 
@@ -137,6 +140,7 @@ class SettingRow:
             self.widget_entry.bind(
                 "<<ComboboxSelected>>", self.handle_combobox_change
             )
+
         else:
             self.entry_stringvar = tk.StringVar()
             self.widget_entry = ttk.Entry(
@@ -151,6 +155,8 @@ class SettingRow:
         self.widget_entry.grid(row=self.row_no, column=2, padx=5)
 
     def enable_entry(self) -> None:
+        self.ckbx_intvar.set(1)
+
         if isinstance(self.widget_entry, ttk.Combobox):
             self.widget_entry.configure(state="readonly")
             self.widget_entry.current(0)
@@ -161,6 +167,7 @@ class SettingRow:
             self.handle_entry_change()
 
     def disable_entry(self) -> None:
+        self.ckbx_intvar.set(0)
         self.widget_entry.configure(state="disabled")
 
         if isinstance(self.widget_entry, ttk.Combobox):
@@ -191,6 +198,26 @@ class SettingRow:
         self.set_from_string(value)
 
         return True  # must return True for this to be called on each input.
+
+    def populate_value(self) -> None:
+        if not self.setting.is_set():
+            return
+
+        value = self.setting.get_value()
+
+        self.enable_entry()
+
+        if isinstance(self.widget_entry, ttk.Combobox):
+            choices = (
+                self.setting.value_list
+                if self.setting.value_list is not None
+                else [True, False]
+            )
+            self.widget_entry.current(choices.index(value))
+            self.handle_combobox_change()
+        else:
+            self.entry_stringvar.set(value)
+            self.handle_entry_change()
 
     def set_from_string(self, value: str) -> None:
         if len(value) == 0:
