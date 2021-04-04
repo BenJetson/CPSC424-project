@@ -29,6 +29,22 @@ def generate() -> SettingManager:
                 "picture-uri",
             ),
             Setting(
+                "Wallpaper Display Mode",
+                "Controls how the wallpaper image is rendered.",
+                SettingType.CHOICE,
+                ["org", "gnome", "desktop", "background"],
+                "picture-options",
+                value_list=[
+                    "none",
+                    "wallpaper",
+                    "centered",
+                    "scaled",
+                    "stretched",
+                    "zoom",
+                    "spanned",
+                ],
+            ),
+            Setting(
                 "Button icons",
                 "Whether buttons display icons.",
                 SettingType.BOOLEAN,
