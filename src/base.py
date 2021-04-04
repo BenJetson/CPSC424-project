@@ -251,6 +251,10 @@ class SettingManager:
             self.setting_file = "/etc/dconf/db/local.d/00_setting_mgr"
             self.lock_file = "/etc/dconf/db/local.d/locks/00_setting_mgr"
 
+    def do_dconf_update(self) -> None:
+        if not is_debug_mode():
+            proc_open(["/usr/bin/dconf", "update"])
+
     def save_to_disk(self) -> None:
         tree = SettingTree(groups=self.groups)
 
@@ -269,8 +273,7 @@ class SettingManager:
         ) as lf:
             tree.save_to_disk([], sf, lf)
 
-        if not is_debug_mode():
-            proc_open(["/usr/bin/dconf", "update"])
+        self.do_dconf_update()
 
     def load_from_disk(self) -> None:
         if not file_or_dir_exists(self.setting_file):
@@ -341,4 +344,6 @@ class SettingManager:
         for f in targets:
             if file_or_dir_exists(f):
                 delete_file(f)
+
+        self.do_dconf_update()
 
