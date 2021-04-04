@@ -17,7 +17,7 @@ from enum import Enum
 from json import dumps as json_dump
 from os import getenv, makedirs
 from os import remove as delete_file
-from os.path import exists as file_exists
+from os.path import exists as file_or_dir_exists
 from typing import Any, Final, List, Protocol, TextIO
 
 
@@ -102,10 +102,10 @@ class Setting:
         return self.value is not None
 
     def full_path(self) -> str:
-        return "/" + "/".join(self.path)
+        return "/".join(self.path)
 
     def fully_qualified_name(self) -> str:
-        return f"{self.full_path()}/{self.key}"
+        return f"/{self.full_path()}/{self.key}"
 
     def __str__(self) -> str:
         payload = json_dump(self.value)
@@ -168,23 +168,23 @@ class SettingTree:
         return active_count > 0
 
     def save_to_disk(
-        self, path_so_far: List[str], profile_file: TextIO, lock_file: TextIO,
+        self, path_so_far: List[str], setting_file: TextIO, lock_file: TextIO,
     ) -> None:
-        current_path = path_so_far + [self.name]
+        current_path = path_so_far + [self.name] if self.name != "" else []
         current_path_str = "/".join(current_path)
 
         if self.has_active_items():
-            profile_file.write(f"[{current_path_str}]\n")
+            setting_file.write(f"[{current_path_str}]\n")
             for item in self.items:
                 if not item.is_set():
                     continue
 
-                profile_file.write(str(item) + "\n")
+                setting_file.write(str(item) + "\n")
                 lock_file.write(item.fully_qualified_name() + "\n")
-            profile_file.write("\n")
+            setting_file.write("\n")
 
         for subtree in self.subtrees:
-            subtree.save_to_disk(current_path, profile_file, lock_file)
+            subtree.save_to_disk(current_path, setting_file, lock_file)
 
     def insert(self, setting: Setting, remaining_path: List[str]) -> None:
         # Base case - remaining path is empty.
@@ -212,37 +212,43 @@ class SettingManager:
     groups: List[SettingGroup]
 
     profile_file: str
+    setting_file: str
     lock_file: str
 
     def __init__(self, groups: List[SettingGroup]) -> None:
         self.groups = groups
 
         self.profile_file = "profile.out"
+        self.setting_file = "settings.out"
         self.lock_file = "locks.out"
 
         if not is_debug_mode():
-            self.profile_file = "/etc/dconf/db/local.d/00_setting_mgr"
+            self.profile_file = "/etc/dconf/profile/user"
+            self.setting_file = "/etc/dconf/db/local.d/00_setting_mgr"
             self.lock_file = "/etc/dconf/db/local.d/locks/00_setting_mgr"
 
     def save_to_disk(self) -> None:
         tree = SettingTree(groups=self.groups)
 
-        with open(
-            SettingManager.profile_file, "w"  # file for profile
-        ) as pf, open(
-            SettingManager.lock_file, "w"  # file for locks
-        ) as lf:
-            tree.save_to_disk([], pf, lf)
-
-    def unlock_all(self) -> None:
-        if not is_debug_mode():
+        if not is_debug_mode() and not file_or_dir_exists(
+            "/etc/dconf/db/local.d/locks"
+        ):
             # When running without debug mode, we must ensure that this full
             # directory structure exists, and create it if not.
             makedirs("/etc/dconf/db/local.d/locks")
 
-        if file_exists(SettingManager.profile_file):
-            delete_file(SettingManager.profile_file)
+        with open(self.profile_file, "w") as pf:
+            pf.writelines(["user-db:user\n" "system-db:local\n"])
 
-        if file_exists(SettingManager.lock_file):
-            delete_file(SettingManager.lock_file)
+        with open(self.setting_file, "w") as sf, open(  # file for profile
+            self.lock_file, "w"  # file for locks
+        ) as lf:
+            tree.save_to_disk([], sf, lf)
+
+    def unlock_all(self) -> None:
+        targets = [self.profile_file, self.setting_file, self.lock_file]
+
+        for f in targets:
+            if file_or_dir_exists(f):
+                delete_file(f)
 
