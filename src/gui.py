@@ -53,6 +53,7 @@ def save() -> None:
             "Success",
             "Profile and locks saved to disk. Reboot or logout to see changes.",
         )
+        root.destroy()
 
 
 def unlock_all() -> None:
@@ -65,6 +66,7 @@ def unlock_all() -> None:
             "Success",
             "Destroyed profile and locks. Reboot or logout to see changes.",
         )
+        root.destroy()
 
 
 # Iterate over each group and create a tab for the group.
