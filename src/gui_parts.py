@@ -42,13 +42,13 @@ class SettingGroupHeader:
 
 class SettingRowHeader:
     def __init__(self, frame: ttk.Frame):
-        ttk.Label(master=frame, text="Setting", width=30, anchor="w").grid(
+        ttk.Label(master=frame, text="Setting", width=35, anchor="w").grid(
             row=0, column=0, padx=5, pady=5
         )
         ttk.Label(master=frame, text="Locked?", anchor="w").grid(
             row=0, column=1, padx=5, pady=5
         )
-        ttk.Label(master=frame, text="Value", width=20, anchor="w").grid(
+        ttk.Label(master=frame, text="Value", width=35, anchor="w").grid(
             row=0, column=2, padx=5, pady=5
         )
 
@@ -134,7 +134,7 @@ class SettingRow:
             self.widget_entry = ttk.Combobox(
                 master=self.frame,
                 values=choices,  # list of legal values.
-                width=20,
+                width=35,
                 state="disabled",
             )
             self.widget_entry.bind(
@@ -145,7 +145,7 @@ class SettingRow:
             self.entry_stringvar = tk.StringVar()
             self.widget_entry = ttk.Entry(
                 master=self.frame,
-                width=20,
+                width=35,
                 textvariable=self.entry_stringvar,
                 validate="all",
                 validatecommand=self.frame.register(self.handle_entry_change),
