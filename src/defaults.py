@@ -23,7 +23,7 @@ def generate() -> SettingManager:
         [
             Setting(
                 "Wallpaper",
-                "Path to the desktop background image.",
+                "Path to the desktop background image. (prefix with file:///)",
                 SettingType.STRING,
                 ["org", "gnome", "desktop", "background"],
                 "picture-uri",
