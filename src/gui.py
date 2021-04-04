@@ -44,7 +44,10 @@ def save() -> None:
         message="Are you sure?\n\nExisting settings will be overwritten.",
     ):
         mgr.save_to_disk()
-        messagebox.showinfo("Success", "Profile and locks saved to disk.")
+        messagebox.showinfo(
+            "Success",
+            "Profile and locks saved to disk. Reboot or logout to see changes.",
+        )
 
 
 def unlock_all() -> None:
@@ -53,7 +56,10 @@ def unlock_all() -> None:
         message="Are you sure?\n\nThis will immediately unlock all settings!",
     ):
         mgr.unlock_all()
-        messagebox.showinfo("Success", "Destroyed profile and locks.")
+        messagebox.showinfo(
+            "Success",
+            "Destroyed profile and locks. Reboot or logout to see changes.",
+        )
 
 
 # Iterate over each group and create a tab for the group.
