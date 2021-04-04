@@ -10,10 +10,10 @@
 #
 
 import tkinter as tk
-from os import getenv, geteuid
+from os import geteuid
 from tkinter import messagebox, ttk
 
-from base import SettingType
+from base import SettingType, is_debug_mode
 from defaults import generate
 from gui_parts import SettingGroupHeader, SettingRow, SettingRowHeader
 
@@ -23,7 +23,7 @@ root.title("Setting Lock Manager")
 
 # Check for root access before starting program.
 # Can be overridden using DEBUG environment variable.
-if geteuid() != 0 and getenv("DEBUG") is None:
+if geteuid() != 0 and not is_debug_mode():
     messagebox.showerror(
         "Insufficient Privileges",
         "This program must be run as root. Try using sudo.",

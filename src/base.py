@@ -15,9 +15,14 @@ from __future__ import annotations
 from abc import abstractmethod
 from enum import Enum
 from json import dumps as json_dump
+from os import getenv, makedirs
 from os import remove as delete_file
 from os.path import exists as file_exists
 from typing import Any, Final, List, Protocol, TextIO
+
+
+def is_debug_mode() -> bool:
+    return getenv("DEBUG") is not None
 
 
 class SettingType(Enum):
@@ -206,26 +211,38 @@ class SettingTree:
 class SettingManager:
     groups: List[SettingGroup]
 
-    PROFILE_FILE = "profile.out"  # FIXME
-    LOCK_FILE = "locks.out"  # FIXME
+    profile_file: str
+    lock_file: str
 
     def __init__(self, groups: List[SettingGroup]) -> None:
         self.groups = groups
+
+        self.profile_file = "profile.out"
+        self.lock_file = "locks.out"
+
+        if not is_debug_mode():
+            self.profile_file = "/etc/dconf/db/local.d/00_setting_mgr"
+            self.lock_file = "/etc/dconf/db/local.d/locks/00_setting_mgr"
 
     def save_to_disk(self) -> None:
         tree = SettingTree(groups=self.groups)
 
         with open(
-            SettingManager.PROFILE_FILE, "w"  # file for profile
+            SettingManager.profile_file, "w"  # file for profile
         ) as pf, open(
-            SettingManager.LOCK_FILE, "w"  # file for locks
+            SettingManager.lock_file, "w"  # file for locks
         ) as lf:
             tree.save_to_disk([], pf, lf)
 
     def unlock_all(self) -> None:
-        if file_exists(SettingManager.PROFILE_FILE):
-            delete_file(SettingManager.PROFILE_FILE)
+        if not is_debug_mode():
+            # When running without debug mode, we must ensure that this full
+            # directory structure exists, and create it if not.
+            makedirs("/etc/dconf/db/local.d/locks")
 
-        if file_exists(SettingManager.LOCK_FILE):
-            delete_file(SettingManager.LOCK_FILE)
+        if file_exists(SettingManager.profile_file):
+            delete_file(SettingManager.profile_file)
+
+        if file_exists(SettingManager.lock_file):
+            delete_file(SettingManager.lock_file)
 
