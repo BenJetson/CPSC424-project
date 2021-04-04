@@ -18,6 +18,7 @@ from json import dumps as json_dump
 from json import loads as json_load
 from os import getenv, makedirs
 from os import remove as delete_file
+from subprocess import run as proc_open
 from os.path import exists as file_or_dir_exists
 from typing import Any, Final, List, Protocol, TextIO
 
@@ -267,6 +268,9 @@ class SettingManager:
             self.lock_file, "w"  # file for locks
         ) as lf:
             tree.save_to_disk([], sf, lf)
+
+        if not is_debug_mode():
+            proc_open(["/usr/bin/dconf", "update"])
 
     def load_from_disk(self) -> None:
         if not file_or_dir_exists(self.setting_file):
