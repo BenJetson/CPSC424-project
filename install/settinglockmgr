@@ -1,0 +1,3 @@
+#!/bin/bash
+
+pkexec /opt/settinglockmgr/gui.py

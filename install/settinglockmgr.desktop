@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.1
+Type=Application
+Name=Setting Lock Manager
+Comment=Control locked settings.
+Icon=system-settings
+OnlyShowIn=Budgie;Cinnamon;GNOME;KDE;LXDE;LXQt;MATE;Pantheon;Unity;XFCE;
+Exec=/usr/local/bin/settinglockmgr
+Categories=GNOME;GTK;Settings;DesktopSettings;Utility;
+Keywords=Configuration;User;Lock;Setting;Manager;
+StartupNotify=true
+Terminal=false
