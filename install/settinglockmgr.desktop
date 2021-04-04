@@ -8,5 +8,5 @@ OnlyShowIn=Budgie;Cinnamon;GNOME;KDE;LXDE;LXQt;MATE;Pantheon;Unity;XFCE;
 Exec=/usr/local/bin/settinglockmgr
 Categories=GNOME;GTK;Settings;DesktopSettings;Utility;
 Keywords=Configuration;User;Lock;Setting;Manager;
-StartupNotify=true
+StartupNotify=false
 Terminal=false
