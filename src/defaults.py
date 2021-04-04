@@ -22,6 +22,22 @@ def generate() -> SettingManager:
         "Control how the desktop looks.",
         [
             Setting(
+                "Theme",
+                "Controls which GTK theme to use.",
+                SettingType.CHOICE,
+                ["org", "gnome", "desktop", "interface"],
+                "gtk-theme",
+                value_list=[
+                    "Yaru",
+                    "Yaru-light",
+                    "Yaru-dark",
+                    "Adawaita",
+                    "Adawaita-dark",
+                    "HighContrast",
+                    "HighContrastInverse",
+                ],
+            ),
+            Setting(
                 "Wallpaper",
                 "Path to the desktop background image. (prefix with file:///)",
                 SettingType.STRING,
@@ -75,6 +91,42 @@ def generate() -> SettingManager:
         ],
     )
 
+    dock = SettingGroup(
+        "Dock",
+        "Control dock features.",
+        [
+            Setting(
+                "Dock position",
+                "Where the dock appears on the screen.",
+                SettingType.CHOICE,
+                ["org", "gnome", "shell", "extensions", "dash-to-dock"],
+                "dock-position",
+                value_list=["LEFT", "BOTTOM", "RIGHT"],
+            ),
+            Setting(
+                "Always show the dock",
+                "Whether to keep the dock visible on the display at all times.",
+                SettingType.BOOLEAN,
+                ["org", "gnome", "shell", "extensions", "dash-to-dock"],
+                "dock-fixed",
+            ),
+            Setting(
+                "Show dock on all displays",
+                "Whether to show a dock on each display or just the primary.",
+                SettingType.BOOLEAN,
+                ["org", "gnome", "shell", "extensions", "dash-to-dock"],
+                "multi-monitor",
+            ),
+            Setting(
+                "Dock icon size",
+                "The maximum size of icons on the dock.",
+                SettingType.NUMBER,
+                ["org", "gnome", "shell", "extensions", "dash-to-dock"],
+                "dash-max-icon-size",
+            ),
+        ],
+    )
+
     security = SettingGroup(
         "Security",
         "Control system security features.",
@@ -101,11 +153,18 @@ def generate() -> SettingManager:
                 "idle-delay",
             ),
             Setting(
+                "Lock delay",
+                "Number of seconds after idle before the system locks.",
+                SettingType.NUMBER,
+                ["org", "gnome", "desktop", "screensaver"],
+                "lock-delay",
+            ),
+            Setting(
                 "Show notifications when locked",
                 "Whether to show notifications on the lock screen.",
                 SettingType.BOOLEAN,
-                ["org", "gnome", "desktop", "screensaver"],
-                "show-notifications",
+                ["org", "gnome", "desktop", "notifications"],
+                "show-in-lock-screen",
             ),
         ],
     )
@@ -138,5 +197,5 @@ def generate() -> SettingManager:
         ],
     )
 
-    return SettingManager([appearance, security, privacy])
+    return SettingManager([appearance, dock, security, privacy])
 
