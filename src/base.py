@@ -15,6 +15,7 @@ from __future__ import annotations
 from abc import abstractmethod
 from enum import Enum
 from json import dumps as json_dump
+from json import loads as json_load
 from os import getenv, makedirs
 from os import remove as delete_file
 from os.path import exists as file_or_dir_exists
@@ -142,22 +143,21 @@ class SettingTree:
         self,
         name: str = "",
         groups: List[SettingGroup] = None,  # should not be none for root.
+        setting_file_name: str = None,  # should not be none for load.
     ) -> None:
 
         self.name = name
         self.items = []
         self.subtrees = []
 
-        if groups is None:
-            return
-
-        settings: List[Setting] = []
-        for group in groups:
-            for item in group.items:
-                settings.append(item)
-
-        for setting in settings:
-            self.insert(setting, setting.path)
+        if groups is not None and setting_file_name is not None:
+            raise RuntimeError(
+                "cannot construct from groups and disk simultaneously"
+            )
+        elif groups is not None:
+            self.construct_from_groups(groups)
+        elif setting_file_name is not None:
+            self.construct_from_disk(setting_file_name)
 
     def has_active_items(self) -> bool:
         active_count = 0
@@ -206,6 +206,79 @@ class SettingTree:
             self.subtrees.append(target_tree)
 
         target_tree.insert(setting, remaining_path[1:])
+
+    def construct_from_groups(self, groups: List[SettingGroup]) -> None:
+        settings: List[Setting] = []
+        for group in groups:
+            for item in group.items:
+                settings.append(item)
+
+        for setting in settings:
+            self.insert(setting, setting.path)
+
+    def construct_from_disk(self, setting_file_name: str) -> None:
+        if not file_or_dir_exists(setting_file_name):
+            return
+
+        with open(setting_file_name, "r") as sf:
+            for line in sf.readlines():
+                # ignore blank lines; these are just for humans.
+                if len(line) == 0:
+                    continue
+
+                path: List[str] = None
+                if line[0] == "[" and line[-1] == "]":
+                    path_str = line[1:-1]
+                    path = path_str.split("/")
+                    continue
+
+                equal_idx = line.index("=")
+
+                if path is None:
+                    raise RuntimeError(
+                        "invalid format: found key-value pair before path"
+                    )
+                elif equal_idx == -1:
+                    raise RuntimeError(
+                        "malformed key-value pair: no equals sign in expression"
+                    )
+
+                key = line[:equal_idx]
+                value_str = line[equal_idx + 1 :]
+                value: Any = None
+                kind = SettingType.STRING
+
+                if value_str[0] == "'" and value_str[-1] == "'":
+                    value = value_str[1:-1]
+                else:
+                    value = json_load(value_str)
+
+                    if isinstance(value, int):
+                        kind = SettingType.NUMBER
+                    elif isinstance(value, bool):
+                        kind = SettingType.BOOLEAN
+
+                s = Setting(
+                    "unknown",  # cannot infer title from file; not stored!
+                    "unknown",  # cannot infer description from file; not stored!
+                    kind,
+                    path,
+                    key,
+                    value,
+                )
+
+                self.insert(s, path)
+
+    def merge_values(self, other: SettingTree) -> None:
+        for my_item in self.items:
+            for other_item in other.items:
+                if my_item.key == other_item.key:
+                    my_item.set_value(other_item.value)
+
+        for my_subtree in self.subtrees:
+            for other_subtree in other.subtrees:
+                if my_subtree.name == other_subtree.name:
+                    my_subtree.merge_values(other_subtree)
 
 
 class SettingManager:
