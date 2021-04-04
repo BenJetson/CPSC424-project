@@ -50,10 +50,10 @@ def save() -> None:
     ):
         mgr.save_to_disk()
         messagebox.showinfo(
-            "Success",
-            "Profile and locks saved to disk. Reboot or logout to see changes.",
+            title="Success",
+            message="Profile and locks saved to disk.\n\n"
+            + "Some settings may not take effect until after a system reboot.",
         )
-        root.destroy()
 
 
 def unlock_all() -> None:
@@ -64,7 +64,8 @@ def unlock_all() -> None:
         mgr.unlock_all()
         messagebox.showinfo(
             "Success",
-            "Destroyed profile and locks. Reboot or logout to see changes.",
+            "Destroyed profile and locks.\n\n"
+            + "Reboot the system now to finish removing all locks.",
         )
         root.destroy()
 
