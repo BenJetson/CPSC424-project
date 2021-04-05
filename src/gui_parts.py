@@ -149,8 +149,8 @@ class SettingRow:
                     width=35,
                     textvariable=self.entry_stringvar,
                     state="disabled",
-                    from_=0,
-                    to=100,
+                    from_=(-1 << 31),
+                    to=(1 << 32 - 1),
                 )
             else:
                 self.widget_entry = ttk.Entry(
@@ -173,7 +173,12 @@ class SettingRow:
             self.handle_combobox_change()
         else:
             self.widget_entry.configure(state="normal")
-            self.entry_stringvar.set("")
+
+            if isinstance(self.widget_entry, ttk.Spinbox):
+                self.entry_stringvar.set("0")
+            else:
+                self.entry_stringvar.set("")
+
             self.handle_entry_change()
 
     def disable_entry(self) -> None:
