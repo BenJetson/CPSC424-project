@@ -166,6 +166,13 @@ def generate() -> SettingManager:
                 ["org", "gnome", "desktop", "notifications"],
                 "show-in-lock-screen",
             ),
+            Setting(
+                "Enable automatic mounts",
+                "Whether to automatically mount connected storage devices.",
+                SettingType.BOOLEAN,
+                ["org", "gnome", "desktop", "media-handling"],
+                "automount",
+            ),
         ],
     )
 
@@ -197,5 +204,47 @@ def generate() -> SettingManager:
         ],
     )
 
-    return SettingManager([appearance, dock, security, privacy])
+    login_window = SettingGroup(
+        "Login Window",
+        "Control login window features.",
+        [
+            Setting(
+                "Show banner message",
+                "Whether to show the banner message on the login screen.",
+                SettingType.BOOLEAN,
+                ["org", "gnome", "login-screen"],
+                "banner-message-enable",
+            ),
+            Setting(
+                "Banner message text",
+                "The text to display in the banner message, if enabled.",
+                SettingType.STRING,
+                ["org", "gnome", "login-screen"],
+                "banner-message-text",
+            ),
+            Setting(
+                "Disable user list",
+                "Do not show the list of users; require manual username entry.",
+                SettingType.BOOLEAN,
+                ["org", "gnome", "login-screen"],
+                "disable-user-list",
+            ),
+            Setting(
+                "Disable power controls",
+                "Do not show shutdown/restart/etc options on login window.",
+                SettingType.BOOLEAN,
+                ["org", "gnome", "login-screen"],
+                "disable-restart-buttons",
+            ),
+            Setting(
+                "Login screen logo",
+                "Path to a small image displayed on login screen (no prefix).",
+                SettingType.STRING,
+                ["org", "gnome", "login-screen"],
+                "logo",
+            ),
+        ],
+    )
+
+    return SettingManager([appearance, dock, security, privacy, login_window])
 
