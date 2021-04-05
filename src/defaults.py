@@ -38,13 +38,6 @@ def generate() -> SettingManager:
                 ],
             ),
             Setting(
-                "Wallpaper",
-                "Path to the desktop background image. (prefix with file:///)",
-                SettingType.STRING,
-                ["org", "gnome", "desktop", "background"],
-                "picture-uri",
-            ),
-            Setting(
                 "Wallpaper Display Mode",
                 "Controls how the wallpaper image is rendered.",
                 SettingType.CHOICE,
@@ -61,6 +54,35 @@ def generate() -> SettingManager:
                 ],
             ),
             Setting(
+                "Background shading type",
+                "Controls gradient/solid background mode (display mode: none).",
+                SettingType.CHOICE,
+                ["org", "gnome", "desktop", "background"],
+                "color-shading-type",
+                value_list=["solid", "horizontal", "vertical"],
+            ),
+            Setting(
+                "Wallpaper",
+                "Path to the desktop background image. (prefix with file:///)",
+                SettingType.STRING,
+                ["org", "gnome", "desktop", "background"],
+                "picture-uri",
+            ),
+            Setting(
+                "Primary background color",
+                "Hex code of the primary background color.",
+                SettingType.STRING,
+                ["org", "gnome", "desktop", "background"],
+                "primary-color",
+            ),
+            Setting(
+                "Secondary background color",
+                "Hex code of the secondary background color.",
+                SettingType.STRING,
+                ["org", "gnome", "desktop", "background"],
+                "secondary-color",
+            ),
+            Setting(
                 "Button icons",
                 "Whether buttons display icons.",
                 SettingType.BOOLEAN,
@@ -74,26 +96,12 @@ def generate() -> SettingManager:
                 ["org", "gnome", "desktop", "interface"],
                 "menus-have-icons",
             ),
-            Setting(
-                "Show date in menu bar",
-                "Whether the menu bar displays the date.",
-                SettingType.BOOLEAN,
-                ["org", "gnome", "desktop", "interface"],
-                "clock-show-date",
-            ),
-            Setting(
-                "Show weekday in menu bar",
-                "Whether the menu bar displays the day of the week.",
-                SettingType.BOOLEAN,
-                ["org", "gnome", "desktop", "interface"],
-                "clock-show-weekday",
-            ),
         ],
     )
 
     dock = SettingGroup(
-        "Dock",
-        "Control dock features.",
+        "Dock and Menu Bar",
+        "Control dock and menu bar features.",
         [
             Setting(
                 "Dock position",
@@ -123,6 +131,27 @@ def generate() -> SettingManager:
                 SettingType.NUMBER,
                 ["org", "gnome", "shell", "extensions", "dash-to-dock"],
                 "dash-max-icon-size",
+            ),
+            Setting(
+                "Show date in menu bar",
+                "Whether the menu bar displays the date.",
+                SettingType.BOOLEAN,
+                ["org", "gnome", "desktop", "interface"],
+                "clock-show-date",
+            ),
+            Setting(
+                "Show weekday in menu bar",
+                "Whether the menu bar displays the day of the week.",
+                SettingType.BOOLEAN,
+                ["org", "gnome", "desktop", "interface"],
+                "clock-show-weekday",
+            ),
+            Setting(
+                "Show seconds in menu bar",
+                "Whether the menu bar displays seconds with the time.",
+                SettingType.BOOLEAN,
+                ["org", "gnome", "desktop", "interface"],
+                "clock-show-seconds",
             ),
         ],
     )
