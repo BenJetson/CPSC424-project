@@ -243,19 +243,22 @@ class SettingTree:
 class SettingManager:
     groups: List[SettingGroup]
 
-    profile_file: str
+    login_profile_file: str
+    user_profile_file: str
     setting_file: str
     lock_file: str
 
     def __init__(self, groups: List[SettingGroup]) -> None:
         self.groups = groups
 
-        self.profile_file = "profile.out"
+        self.login_profile_file = "login.profile.out"
+        self.user_profile_file = "user.profile.out"
         self.setting_file = "settings.out"
         self.lock_file = "locks.out"
 
         if not is_debug_mode():
-            self.profile_file = "/etc/dconf/profile/user"
+            self.login_profile_file = "/etc/dconf/profile/gdm"
+            self.user_profile_file = "/etc/dconf/profile/user"
             self.setting_file = "/etc/dconf/db/local.d/00_setting_mgr"
             self.lock_file = "/etc/dconf/db/local.d/locks/00_setting_mgr"
 
@@ -273,8 +276,17 @@ class SettingManager:
             # directory structure exists, and create it if not.
             makedirs("/etc/dconf/db/local.d/locks")
 
-        with open(self.profile_file, "w") as pf:
-            pf.writelines(["user-db:user\n" "system-db:local\n"])
+        with open(self.login_profile_file, "w") as pf:
+            pf.writelines(
+                [
+                    "user-db:user\n",
+                    "system-db:local\n",
+                    "file-db:/usr/share/gdm/greeter-dconf-defaults\n",
+                ]
+            )
+
+        with open(self.user_profile_file, "w") as pf:
+            pf.writelines(["user-db:user\n", "system-db:local\n"])
 
         with open(self.setting_file, "w") as sf, open(  # file for profile
             self.lock_file, "w"  # file for locks
@@ -347,7 +359,12 @@ class SettingManager:
             group.try_merge_values(merge_group)
 
     def unlock_all(self) -> None:
-        targets = [self.profile_file, self.setting_file, self.lock_file]
+        targets = [
+            self.login_profile_file,
+            self.user_profile_file,
+            self.setting_file,
+            self.lock_file,
+        ]
 
         for f in targets:
             if file_or_dir_exists(f):
