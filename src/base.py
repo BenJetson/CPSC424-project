@@ -251,8 +251,8 @@ class SettingManager:
     def __init__(self, groups: List[SettingGroup]) -> None:
         self.groups = groups
 
-        self.login_profile_file = "login.profile.out"
-        self.user_profile_file = "user.profile.out"
+        self.login_profile_file = "profile-login.out"
+        self.user_profile_file = "profile-user.out"
         self.setting_file = "settings.out"
         self.lock_file = "locks.out"
 
