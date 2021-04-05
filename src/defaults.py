@@ -230,6 +230,34 @@ def generate() -> SettingManager:
                 ["org", "gnome", "desktop", "privacy"],
                 "remember-recent-files",
             ),
+            Setting(
+                "Remember recent applications",
+                "Allow the shell to remember recently opened applications.",
+                SettingType.BOOLEAN,
+                ["org", "gnome", "desktop", "privacy"],
+                "remember-app-usage",
+            ),
+            Setting(
+                "Auto-delete trashed items",
+                "Whether to automatically delete files in trash after a while.",
+                SettingType.BOOLEAN,
+                ["org", "gnome", "desktop", "privacy"],
+                "remove-old-trash-files",
+            ),
+            Setting(
+                "Auto-delete temp files",
+                "Whether to automatically delete temp files after a while.",
+                SettingType.BOOLEAN,
+                ["org", "gnome", "desktop", "privacy"],
+                "remove-old-temp-files",
+            ),
+            Setting(
+                "Old files age",
+                "Number of days to keep old files (if auto-delete is enabled).",
+                SettingType.NUMBER,
+                ["org", "gnome", "desktop", "privacy"],
+                "old-files-age",
+            ),
         ],
     )
 
