@@ -113,7 +113,7 @@ class SettingRow:
 
     def build_ckbx(self) -> None:
         self.ckbx_intvar = tk.IntVar()
-        self.widget_ckbx = tk.Checkbutton(
+        self.widget_ckbx = ttk.Checkbutton(
             master=self.frame,
             variable=self.ckbx_intvar,
             command=self.handle_ckbx_change,

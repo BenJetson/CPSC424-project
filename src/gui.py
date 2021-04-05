@@ -90,13 +90,19 @@ for group in mgr.groups:
         SettingRow(setting, settings_frame, index + 2)
 
 # Create buttons in  the footer.
-tk.Button(text="Save", command=save).pack(side=tk.RIGHT, padx=5, pady=5)
-tk.Button(text="Cancel", command=root.destroy).pack(
+footer_frame = ttk.Frame(master=root)
+
+ttk.Button(master=footer_frame, text="Save", command=save).pack(
     side=tk.RIGHT, padx=5, pady=5
 )
-tk.Button(text="Unlock All", command=unlock_all).pack(
+ttk.Button(master=footer_frame, text="Cancel", command=root.destroy).pack(
     side=tk.RIGHT, padx=5, pady=5
 )
+ttk.Button(master=footer_frame, text="Unlock All", command=unlock_all).pack(
+    side=tk.RIGHT, padx=5, pady=5
+)
+
+footer_frame.pack(fill=tk.X)
 
 # Force the window to center on the display.
 root.eval("tk::PlaceWindow . center")
