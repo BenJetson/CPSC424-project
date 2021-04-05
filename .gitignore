@@ -129,6 +129,4 @@ dmypy.json
 .pyre/
 
 # output files
-profile.out
-settings.out
-locks.out
+*.out
