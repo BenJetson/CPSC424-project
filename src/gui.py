@@ -19,9 +19,23 @@ from base import SettingType, is_debug_mode
 from defaults import generate
 from gui_parts import SettingGroupHeader, SettingRow, SettingRowHeader
 
+try:
+    from gttk import GTTK
+except ImportError:
+    GTTK = None
+
 # Create main window frame
 root = tk.Tk()
 root.title("Setting Lock Manager")
+
+# Set GTK style, if available.
+if GTTK is not None:
+    # Inject GTK hooks into to Tk window.
+    gttk = GTTK(root)
+
+    # Apply GTK styles to TTK widgets.
+    style = ttk.Style(root)
+    style.theme_use("gttk")
 
 # Check for root access before starting program.
 # Can be overridden using DEBUG environment variable.
