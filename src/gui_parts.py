@@ -68,7 +68,7 @@ class SettingRow:
     widget_ckbx: ttk.Checkbutton
     ckbx_intvar: tk.IntVar
 
-    widget_entry: Union[ttk.Entry, ttk.Combobox]
+    widget_entry: Union[ttk.Entry, ttk.Combobox, ttk.Spinbox]
     entry_stringvar: tk.StringVar
 
     def __init__(self, setting: Setting, frame: ttk.Frame, row_no: int) -> None:
@@ -140,15 +140,26 @@ class SettingRow:
             self.widget_entry.bind(
                 "<<ComboboxSelected>>", self.handle_combobox_change
             )
-
         else:
             self.entry_stringvar = tk.StringVar()
-            self.widget_entry = ttk.Entry(
-                master=self.frame,
-                width=35,
-                textvariable=self.entry_stringvar,
-                state="disabled",
-            )
+
+            if self.setting.get_kind() == SettingType.NUMBER:
+                self.widget_entry = ttk.Spinbox(
+                    master=self.frame,
+                    width=35,
+                    textvariable=self.entry_stringvar,
+                    state="disabled",
+                    from_=0,
+                    to=100,
+                )
+            else:
+                self.widget_entry = ttk.Entry(
+                    master=self.frame,
+                    width=35,
+                    textvariable=self.entry_stringvar,
+                    state="disabled",
+                )
+
             self.entry_stringvar.trace_add("write", self.handle_entry_change)
 
         self.widget_entry.grid(row=self.row_no, column=2, padx=5)
