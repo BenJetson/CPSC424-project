@@ -304,7 +304,7 @@ def generate() -> SettingManager:
             Setting(
                 "Failure reset counter",
                 "Number of failed login attempts before the login screen "
-                + "will reset and to the user selection screen.",
+                + "will reset and return to the user selection screen.",
                 SettingType.NUMBER,
                 ["org", "gnome", "login-screen"],
                 "allowed-failures",
