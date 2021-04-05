@@ -251,16 +251,16 @@ class SettingManager:
     def __init__(self, groups: List[SettingGroup]) -> None:
         self.groups = groups
 
-        self.login_profile_file = "profile-login.out"
-        self.user_profile_file = "profile-user.out"
-        self.setting_file = "settings.out"
-        self.lock_file = "locks.out"
+        self.login_profile_file = "/etc/dconf/profile/gdm"
+        self.user_profile_file = "/etc/dconf/profile/user"
+        self.setting_file = "/etc/dconf/db/local.d/00_setting_mgr"
+        self.lock_file = "/etc/dconf/db/local.d/locks/00_setting_mgr"
 
-        if not is_debug_mode():
-            self.login_profile_file = "/etc/dconf/profile/gdm"
-            self.user_profile_file = "/etc/dconf/profile/user"
-            self.setting_file = "/etc/dconf/db/local.d/00_setting_mgr"
-            self.lock_file = "/etc/dconf/db/local.d/locks/00_setting_mgr"
+        if is_debug_mode():
+            self.login_profile_file = "profile-login.out"
+            self.user_profile_file = "profile-user.out"
+            self.setting_file = "settings.out"
+            self.lock_file = "locks.out"
 
     def do_dconf_update(self) -> None:
         if not is_debug_mode():
