@@ -92,14 +92,6 @@ would do in the future. Your paper should have several components:
 - Methodology/Design: explain the methods and/or system design that you used to
   achieve your objectives. You should have at least one figure that illustrates
   the methodology or design.
-- Graduate students: User's Manual. For the projects that are building something
-  that is meant to be used by 'users', this section should allow a user to
-  understand how to use the system. This fully documents what you have built. If
-  there are systems that you use, such as MySQL or PHP packages, you should
-  provide detailed instructions as to how someone should install these
-  components. The instructions should provide enough details so that one of your
-  classmates can get your project running on his/her VM given your tar.gz and
-  final report.
 - Analysis/results: This documents the validation, demonstration, analysis of
   your project.
 - Conclusions and future work: Summarize what you achieved and draw conclusions
